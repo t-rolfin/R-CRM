@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using crm.domain.LeadAggregate;
+using System.Reflection;
 
 namespace crm.infrastructure
 {
@@ -18,6 +20,8 @@ namespace crm.infrastructure
             ConnectionString = connectionString;
         }
 
+        public DbSet<Lead> Leads { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(ConnectionString.Value);
@@ -27,6 +31,7 @@ namespace crm.infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
         }
     }
