@@ -1,4 +1,5 @@
 ﻿using crm.domain.Enums;
+using crm.domain.Interfaces;
 using crm.domain.MetaResults;
 using crm.domain.ValueObjects;
 using Rolfin.Result;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace crm.domain.LeadAggregate
 {
-    public class Lead : Entity<Guid>
+    public class Lead : Entity<Guid>, IAggregateRoot
     {
         protected Lead() : base(Guid.NewGuid()) { }
 
@@ -21,23 +22,30 @@ namespace crm.domain.LeadAggregate
             this.CatchLead = DateTime.Now;
             this.DelivaryAddress = new Address(delivaryAddress, 0, null, null, 0);
             this.Client = new Customer(null, phoneNumber, email);
+            this.notes = new List<Note>();
         }
 
+        public DateTime CloseLeadDate { get; set; }
         public DateTime CatchLead { get; init; }
         public string LeadProducts { get; init; }
-        public LeadStage LeadStage { get; init; }
-        public From CameFrom { get; init; }
+        //public LeadStage LeadStage { get; init; }
+        //public From CameFrom { get; init; }
         public CloseStatus CloseStatus { get; protected set; }
         public Customer Client { get; init; }
-        public Address DelivaryAddress { get; init; }
+        public Address DelivaryAddress { get; protected set; }
         public bool IsClosed { get; protected set; }
+        public decimal ProductsValue { get; protected set; }
 
 
         private readonly List<Note> notes;
         public IReadOnlyList<Note> Notes
             => notes.AsReadOnly();
 
-        private DateTime CloseLeadDate { get; set; }
+
+        public static Lead New(string leadProducts, string phoneNumber, string delivaryAddress, string email)
+        {
+            return new Lead(leadProducts, phoneNumber, delivaryAddress, email);
+        }
 
         public Result<bool> AddNote(string newNote)
         {
@@ -78,5 +86,18 @@ namespace crm.domain.LeadAggregate
             this.CloseLeadDate = DateTime.UtcNow;
         }
 
+        public Result<bool> SetValue(decimal valueOfProducts)
+        {
+            if(valueOfProducts is not 0.0m)
+            {
+                this.ProductsValue = valueOfProducts;
+                return Result<bool>.Success(true);
+            }
+            else
+            {
+                return Result<bool>.Invalid(false).With<InvalidValue>();
+            }
+
+        }
     }
 }

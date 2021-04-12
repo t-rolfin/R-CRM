@@ -17,7 +17,7 @@ namespace crm.domain.LeadAggregate
         public string EmailAddress { get; init; }
         public Address BillingAddress { get; protected set; }
 
-        public void ChangeBillingAddress(string street, int number,string city, string bloc, int apartment)
+        public void AsignBillingAddress(string street, int number,string city, string bloc, int apartment)
         {
             this.BillingAddress = new Address(street, number, city, bloc, apartment);
         }
