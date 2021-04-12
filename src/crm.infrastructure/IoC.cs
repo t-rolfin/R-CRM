@@ -11,7 +11,7 @@ namespace crm.infrastructure
 {
     public static class IoC
     {
-        public static ServiceCollection Infrastructure(this ServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection Infrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton(x =>
             {
