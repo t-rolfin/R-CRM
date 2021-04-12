@@ -25,17 +25,17 @@ namespace crm.domain.LeadAggregate
             this.notes = new List<Note>();
         }
 
-        public DateTime CloseLeadDate { get; set; }
-        public DateTime CatchLead { get; init; }
+        public DateTime CloseLeadDate { get; protected set; }
+        public DateTime CatchLead { get; }
         public string LeadProducts { get; init; }
-        //public LeadStage LeadStage { get; init; }
-        //public From CameFrom { get; init; }
+        public LeadStage LeadStage { get; protected set; }
         public CloseStatus CloseStatus { get; protected set; }
         public Customer Client { get; init; }
         public Address DelivaryAddress { get; protected set; }
-        public bool IsClosed { get; protected set; }
+        public bool IsClosed => LeadStage == LeadStage.Close ? true : false;
         public decimal ProductsValue { get; protected set; }
 
+        //public From CameFrom { get; init; }
 
         private readonly List<Note> notes;
         public IReadOnlyList<Note> Notes
@@ -80,8 +80,7 @@ namespace crm.domain.LeadAggregate
 
         public void CloseLead(CloseStatus closeStatus)
         {
-            //set LeadStage as 'close'
-            IsClosed = true;
+            this.LeadStage = LeadStage.Close;
             this.CloseStatus = closeStatus;
             this.CloseLeadDate = DateTime.UtcNow;
         }
