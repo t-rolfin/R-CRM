@@ -11,7 +11,7 @@ namespace crm.domain.Interfaces
     public interface IRepository<T>
         where T : IAggregateRoot
     {
-        Result<Lead> GetResult(Guid leadId);
+        Result<Lead> GetLead(Guid leadId);
         Result<bool> Create(T obj);
         Result<bool> Update(T obj);
     }
