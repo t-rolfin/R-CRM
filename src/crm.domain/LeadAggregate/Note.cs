@@ -9,6 +9,7 @@ namespace crm.domain.LeadAggregate
             Content = content;
         }
 
+        public Guid LeadId { get; init; }
         public string Content { get; init; }
     }
 }

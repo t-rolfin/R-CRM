@@ -12,6 +12,7 @@ namespace crm.domain.LeadAggregate
             EmailAddress = emailAddress;
         }
 
+        public Guid LeadId { get; init; }
         public Name Name { get; init; }
         public string PhoneNumber { get; init; }
         public string EmailAddress { get; init; }
