@@ -4,6 +4,8 @@ namespace crm.domain.LeadAggregate
 {
     public class Note : Entity<Guid>
     {
+        public Note() : base() { }
+
         public Note(string content)
         {
             Content = content;

@@ -5,6 +5,8 @@ namespace crm.domain.LeadAggregate
 {
     public class Customer : Entity<Guid>
     {
+        protected Customer() : base() { }
+
         public Customer(Name name, string phoneNumber, string emailAddress)
         {
             Name = name;
