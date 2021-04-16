@@ -20,6 +20,7 @@ namespace crm.infrastructure
 
             services.AddDbContext<LeadDbContext>();
             services.AddTransient<IUnitOfWork, LeadDbContext>();
+            services.AddTransient<ILeadRepository, LeadRepository>();
 
             return services;
         }

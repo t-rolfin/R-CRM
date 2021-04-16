@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace crm.domain.Interfaces
@@ -11,8 +12,8 @@ namespace crm.domain.Interfaces
     public interface IRepository<T>
         where T : IAggregateRoot
     {
-        Result<Lead> GetLead(Guid leadId);
-        Result<bool> Create(T obj);
-        Result<bool> Update(T obj);
+        Task<Result<Lead>> GetLead(Guid leadId);
+        Task<Result<bool>> Create(T obj, CancellationToken cancellationToken);
+        Task<Result<bool>> Update(T obj, CancellationToken cancellationToken);
     }
 }

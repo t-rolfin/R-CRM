@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using crm.domain.LeadAggregate;
 using System.Reflection;
+using System.Threading;
 
 namespace crm.infrastructure
 {
