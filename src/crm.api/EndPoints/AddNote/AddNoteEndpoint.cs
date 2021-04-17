@@ -31,6 +31,9 @@ namespace crm.api.EndPoints.AddNote
         ]
         public override async Task<ActionResult> HandleAsync([FromRoute] AddNoteDto request, CancellationToken cancellationToken = default)
         {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
             var leadResponse = await _repo.GetLead(request.LeadId);
 
             if (leadResponse.IsSuccess)

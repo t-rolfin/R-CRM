@@ -31,6 +31,9 @@ namespace crm.api.EndPoints.CreateLead
         ]
         public override async Task<ActionResult<bool>> HandleAsync(CreateLeadDto request, CancellationToken cancellationToken = default)
         {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
             var lead = Lead.New(request.LeadProducts, request.PhoneNumber, request.DelivaryAddress, request.Email);
 
             var response = await _repo.Create(lead, cancellationToken);

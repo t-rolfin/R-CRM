@@ -12,8 +12,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using crm.infrastructure;
-using MediatR;
 using System.Reflection;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 namespace crm.api
 {
@@ -30,7 +31,9 @@ namespace crm.api
         {
             IoC.Infrastructure(services, Configuration);
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "crm.api", Version = "v1" });
