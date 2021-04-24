@@ -26,7 +26,7 @@ namespace crm.domain.LeadAggregate
         }
 
         public DateTime CloseLeadDate { get; protected set; }
-        public DateTime CatchLead { get; }
+        public DateTime CatchLead { get; init; }
         public string LeadProducts { get; init; }
         public LeadStage LeadStage { get; protected set; }
         public CloseStatus CloseStatus { get; protected set; }
@@ -37,7 +37,7 @@ namespace crm.domain.LeadAggregate
 
         //public From CameFrom { get; init; }
 
-        private readonly List<Note> notes;
+        private readonly List<Note> notes = new List<Note>();
         public IReadOnlyList<Note> Notes
             => notes.AsReadOnly();
 

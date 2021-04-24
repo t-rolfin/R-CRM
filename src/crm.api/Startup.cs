@@ -31,6 +31,15 @@ namespace crm.api
         {
             IoC.Infrastructure(services, Configuration);
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("UI", x => {
+                    x.AllowAnyMethod();
+                    x.AllowAnyOrigin();
+                    x.AllowAnyHeader();
+                });
+            });
+
             services.AddControllers()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
 
@@ -51,6 +60,8 @@ namespace crm.api
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("UI");
 
             app.UseRouting();
 

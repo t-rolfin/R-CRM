@@ -1,4 +1,6 @@
-﻿using crm.domain.Interfaces;
+﻿using crm.common;
+using crm.domain.Interfaces;
+using crm.infrastructure.QueryRepositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -21,6 +23,7 @@ namespace crm.infrastructure
             services.AddDbContext<LeadDbContext>();
             services.AddTransient<IUnitOfWork, LeadDbContext>();
             services.AddTransient<ILeadRepository, LeadRepository>();
+            services.AddTransient<ILeadQueryRepository, LeadQueryRepository>();
 
             return services;
         }
