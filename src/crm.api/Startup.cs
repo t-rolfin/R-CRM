@@ -15,6 +15,10 @@ using crm.infrastructure;
 using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace crm.api
 {
@@ -31,8 +35,30 @@ namespace crm.api
         {
             IoC.Infrastructure(services, Configuration);
 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = Configuration["Auth0:Domain"];
+                    options.Audience = Configuration["Auth0:Audience"];
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        NameClaimType = ClaimTypes.NameIdentifier
+                    };
+                });
+
             services.AddControllers()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
+
+            services.AddCors(x =>
+                    {
+                        x.AddPolicy("UI", y => 
+                        { 
+                            y.AllowAnyMethod(); 
+                            y.AllowAnyHeader();
+                            y.AllowAnyOrigin();
+                        });
+                    });
 
             services.AddSwaggerGen(c =>
             {
@@ -54,6 +80,9 @@ namespace crm.api
 
             app.UseRouting();
 
+            app.UseCors("UI");
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
