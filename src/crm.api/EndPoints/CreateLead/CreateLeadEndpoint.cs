@@ -2,6 +2,7 @@
 using crm.domain.Interfaces;
 using crm.domain.LeadAggregate;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
@@ -15,17 +16,21 @@ namespace crm.api.EndPoints.CreateLead
         .WithRequest<CreateLeadDto>
         .WithResponse<bool>
     {
-        private readonly ILeadRepository _repo;
+        private readonly ILeadRepository _leadRepo;
+        private readonly ILeadService _leadService;
+        private readonly ILogger<CreateLeadEndpoint> _logger;
 
-        public CreateLeadEndpoint(ILeadRepository repo)
+        public CreateLeadEndpoint(ILeadRepository leadRepo, ILeadService leadService, ILogger<CreateLeadEndpoint> logger)
         {
-            _repo = repo ?? throw new ArgumentNullException();
+            _leadRepo = leadRepo ?? throw new ArgumentNullException();
+            _leadService = leadService ?? throw new ArgumentNullException();
+            _logger = logger ?? throw new ArgumentNullException();
         }
 
         [HttpPost("/leads/create")]
         [SwaggerOperation(
         Summary = "Create a lead",
-        Description = "Will create a lead foryour needs.",
+        Description = "Will create a lead for your needs.",
         OperationId = "Lead.Create",
         Tags = new[] { "LeadEndpoint" })
         ]
@@ -36,12 +41,19 @@ namespace crm.api.EndPoints.CreateLead
 
             var lead = Lead.New(request.LeadProducts, request.PhoneNumber, request.DelivaryAddress, request.Email);
 
-            var response = await _repo.Create(lead, cancellationToken);
+            var updatedLead = await _leadService.AssignExistingClient(lead, request.PhoneNumber, cancellationToken); 
 
-            if (response.IsSuccess)
-                return Ok(response.MetaResult.Message);
+            var isSaved = await _leadRepo.CreateAsync(lead, cancellationToken);
+
+            if (isSaved)
+                _logger.LogInformation($"An new lead with id:{updatedLead.Value.Id} was added.");
             else
-                return BadRequest(response.MetaResult.Message);
+                _logger.LogError("An error occure while processing the request.");
+
+            if (updatedLead.IsSuccess && isSaved)
+                return Ok();
+            else
+                return BadRequest();
         }
     }
 }

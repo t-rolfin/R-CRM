@@ -30,7 +30,7 @@ namespace crm.domain.LeadAggregate
         public string LeadProducts { get; init; }
         public LeadStage LeadStage { get; protected set; }
         public CloseStatus CloseStatus { get; protected set; }
-        public Customer Client { get; init; }
+        public Customer Client { get; protected set; }
         public Address DelivaryAddress { get; protected set; }
         public bool IsClosed => LeadStage == LeadStage.Close ? true : false;
         public decimal ProductsValue { get; protected set; }
@@ -45,6 +45,16 @@ namespace crm.domain.LeadAggregate
         public static Lead New(string leadProducts, string phoneNumber, string delivaryAddress, string email)
         {
             return new Lead(leadProducts, phoneNumber, delivaryAddress, email);
+        }
+
+        public Result<bool> UpdateClient(Customer customer)
+        {
+            if (customer is null)
+                return Result<bool>.Invalid();
+
+            this.Client = customer;
+
+            return Result<bool>.Success();
         }
 
         public Result<bool> AddNote(string newNote)

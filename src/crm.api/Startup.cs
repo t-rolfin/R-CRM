@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace crm.api
 {
@@ -43,17 +44,12 @@ namespace crm.api
                     x.AllowAnyHeader();
                 });
             });
-            
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     options.Authority = Configuration["Auth0:Domain"];
                     options.Audience = Configuration["Auth0:Audience"];
-
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        NameClaimType = ClaimTypes.NameIdentifier
-                    };
                 });
 
             services.AddControllers()

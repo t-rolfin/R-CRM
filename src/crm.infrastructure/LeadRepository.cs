@@ -1,7 +1,6 @@
 ﻿using crm.domain.Interfaces;
 using crm.domain.LeadAggregate;
 using Microsoft.EntityFrameworkCore;
-using Rolfin.Result;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,37 +23,50 @@ namespace crm.infrastructure
         public IUnitOfWork UnitOfWork
             => this.unitOfWork;
 
-        public async Task<Result<Lead>> GetLead(Guid leadId)
+        public async Task<Lead> GetAsync(Guid leadId)
 
         {
             return await unitOfWork.Leads.Where(x => x.Id == leadId)
-                .Include(x => x.Notes).FirstOrDefaultAsync();
+                .Include(x => x.Notes)
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<Result<bool>> Create(Lead obj, CancellationToken cancellationToken)
+        public async Task<bool> CreateAsync(Lead obj, CancellationToken cancellationToken)
         {
             if (obj is null)
-                return Result<bool>.Invalid(false);
+                return false;
             else
             {
                 await unitOfWork.Leads.AddAsync(obj);
                 await unitOfWork.SaveChangesAsync(cancellationToken);
             }
 
-            return Result<bool>.Success(true);
+            return true;
         }
 
-        public async Task<Result<bool>> Update(Lead obj, CancellationToken cancellationToken)
+        public async Task<bool> UpdateAsync(Lead obj, CancellationToken cancellationToken)
         {
             if (obj is null)
-                return Result<bool>.Invalid(false);
+                return false;
             else
             {
-                unitOfWork.Entry(obj).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                unitOfWork.Entry(obj).State = EntityState.Modified;
                 await unitOfWork.SaveChangesAsync(cancellationToken);
             }
 
-            return Result<bool>.Success(true);
+            return true;
+        }
+
+        public async Task<Lead> GetByClientPhoneNumber(string phoneNumber, CancellationToken cancellationToken)
+        {
+            var lead = await unitOfWork.Leads.Include(x => x.Client)
+                .Where(x => x.Client.PhoneNumber == phoneNumber)
+                .FirstOrDefaultAsync();
+
+            if (lead is not null)
+                return lead;
+            else
+                return null;
         }
     }
 }

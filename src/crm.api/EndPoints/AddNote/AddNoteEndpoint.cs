@@ -14,11 +14,11 @@ namespace crm.api.EndPoints.AddNote
         .WithRequest<AddNoteDto>
         .WithoutResponse
     {
-        private readonly ILeadRepository _repo;
+        private readonly ILeadRepository _leadRepo;
 
-        public AddNoteEndpoint(ILeadRepository repo)
+        public AddNoteEndpoint(ILeadRepository leadRepo)
         {
-            _repo = repo ?? throw new ArgumentNullException();
+            _leadRepo = leadRepo ?? throw new ArgumentNullException();
         }
 
 
@@ -34,17 +34,16 @@ namespace crm.api.EndPoints.AddNote
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var leadResponse = await _repo.GetLead(request.LeadId);
+            var lead = await _leadRepo.GetAsync(request.LeadId);
 
-            if (leadResponse.IsSuccess)
-                leadResponse.Value.AddNote(request.Note);
+            var result = lead.AddNote(request.Note);
 
-            var response = await _repo.Update(leadResponse.Value, cancellationToken);
+            var response = await _leadRepo.UpdateAsync(lead, cancellationToken);
 
-            if (response.IsSuccess)
-                return Ok(response.MetaResult.Message);
+            if (response && result.IsSuccess)
+                return Ok(result.MetaResult.Message);
             else
-                return BadRequest(response.MetaResult.Message);
+                return BadRequest(result.MetaResult.Message);
 
         }
     }
