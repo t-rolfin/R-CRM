@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace crm.api.EndPoints.CreateLead
 {
-    public class CreateLeadValidation : AbstractValidator<CreateLeadDto>
+    public class CreateLeadValidator : AbstractValidator<CreateLeadModel>
     {
-        public CreateLeadValidation()
+        public CreateLeadValidator()
         {
             RuleFor(x => x.DelivaryAddress)
                 .NotEmpty()

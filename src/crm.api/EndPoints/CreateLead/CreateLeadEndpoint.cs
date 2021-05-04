@@ -9,18 +9,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Rolfin.Result;
+using crm.common.Utils;
 
 namespace crm.api.EndPoints.CreateLead
 {
     public class CreateLeadEndpoint : BaseAsyncEndpoint
-        .WithRequest<CreateLeadDto>
+        .WithRequest<CreateLeadModel>
         .WithResponse<bool>
     {
         private readonly ILeadRepository _leadRepo;
         private readonly ILeadService _leadService;
         private readonly ILogger<CreateLeadEndpoint> _logger;
 
-        public CreateLeadEndpoint(ILeadRepository leadRepo, ILeadService leadService, ILogger<CreateLeadEndpoint> logger)
+        public CreateLeadEndpoint(
+            ILeadRepository leadRepo, 
+            ILeadService leadService, 
+            ILogger<CreateLeadEndpoint> logger)
         {
             _leadRepo = leadRepo ?? throw new ArgumentNullException();
             _leadService = leadService ?? throw new ArgumentNullException();
@@ -34,26 +40,30 @@ namespace crm.api.EndPoints.CreateLead
         OperationId = "Lead.Create",
         Tags = new[] { "LeadEndpoint" })
         ]
-        public override async Task<ActionResult<bool>> HandleAsync(CreateLeadDto request, CancellationToken cancellationToken = default)
+        public override async Task<ActionResult<bool>> HandleAsync(CreateLeadModel request, CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
             var lead = Lead.New(request.LeadProducts, request.PhoneNumber, request.DelivaryAddress, request.Email);
 
-            var updatedLead = await _leadService.AssignExistingClient(lead, request.PhoneNumber, cancellationToken); 
+            if (lead is null)
+                return NotFound();
 
-            var isSaved = await _leadRepo.CreateAsync(lead, cancellationToken);
+            var updatedLead = await _leadService.AssignExistingClient(lead, request.PhoneNumber, cancellationToken);
 
-            if (isSaved)
-                _logger.LogInformation($"An new lead with id:{updatedLead.Value.Id} was added.");
-            else
-                _logger.LogError("An error occure while processing the request.");
+            if (!updatedLead.IsSuccess)
+            {
+                _logger.LogError("An error ocure when lead was updated!");
 
-            if (updatedLead.IsSuccess && isSaved)
-                return Ok();
-            else
                 return BadRequest();
+            }
+
+            await _leadRepo.CreateAsync(lead, cancellationToken);
+
+            _logger.LogInformation($"An new lead with id:{ lead.Id } was added.");
+
+            return Created($"leads/{ lead.Id }", null);
         }
     }
 }
