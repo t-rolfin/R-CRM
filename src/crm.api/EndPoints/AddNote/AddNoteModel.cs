@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace crm.api.EndPoints.AddNote
 {
-    public class AddNoteDto
+    public class AddNoteModel
     {
+
         [FromRoute(Name = "leadid")]  
         public Guid LeadId { get; set; }
 

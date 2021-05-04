@@ -1,16 +1,17 @@
-﻿using System;
+﻿using crm.common.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace crm.common.DTOs
 {
-    public class LeadDetailsDto
+    public class LeadDetailsModel : ActionList
     {
 
-        public LeadDetailsDto()
+        public LeadDetailsModel()
         {
-            Notes = new List<NoteDto>();
+            Notes = new List<NoteModel>();
         }
 
         public Guid Id { get; set; }
@@ -21,6 +22,6 @@ namespace crm.common.DTOs
         public string CloseStatus { get; set; }
         public string DelivaryAddress { get; set; }
         public decimal ProductsValue { get; set; }
-        public List<NoteDto> Notes { get; set; }
+        public List<NoteModel> Notes { get; set; }
     }
 }

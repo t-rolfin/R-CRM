@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 
 namespace crm.common.DTOs.GetLeads
 {
-    public class LeadsDto
+    public class LeadsModel
     {
-        public LeadsDto()
+        public LeadsModel()
         {
-            Leads = new List<LeadDto>();
+            Leads = new List<LeadModel>();
         }
 
-        public LeadsDto(IEnumerable<LeadDto> leads)
+        public LeadsModel(IEnumerable<LeadModel> leads)
         {
             Leads = leads;
         }
 
-        public IEnumerable<LeadDto> Leads { get; set; }
+        public IEnumerable<LeadModel> Leads { get; set; }
     }
 }

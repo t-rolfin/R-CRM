@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace crm.common.DTOs.GetLeads
 {
-    public class LeadDto
+    public class LeadModel
     {
-        public LeadDto() { }
+        public LeadModel() { }
 
-        public LeadDto(Guid id, string phoneNumber, string leadStage, DateTime catchLead)
+        public LeadModel(Guid id, string phoneNumber, string leadStage, DateTime catchLead)
         {
             Id = id;
             PhoneNumber = phoneNumber;

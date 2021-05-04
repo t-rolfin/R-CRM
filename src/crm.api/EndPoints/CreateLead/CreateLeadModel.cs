@@ -7,7 +7,7 @@ namespace crm.api.EndPoints.CreateLead
 {
 
     [Serializable]
-    public class CreateLeadDto
+    public class CreateLeadModel
     {
         public string LeadProducts { get; set; }
         public string PhoneNumber { get; set; }

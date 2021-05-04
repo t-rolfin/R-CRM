@@ -4,9 +4,9 @@ using System.Text;
 
 namespace crm.common.DTOs
 {
-    public class NoteDto
+    public class NoteModel
     {
-        public NoteDto() { }
+        public NoteModel() { }
 
         public Guid Id { get; set; }
         public string Content { get; set; }
