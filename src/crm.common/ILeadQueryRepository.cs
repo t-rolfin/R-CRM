@@ -10,7 +10,8 @@ namespace crm.common
 {
     public interface ILeadQueryRepository
     {
-        Task<LeadsDto> GetAll();
-        Task<LeadDetailsDto> GetDetails(Guid leadId);
+        Task<LeadsModel> GetAll();
+        Task<LeadDetailsModel> GetDetails(Guid leadId);
+        Task<ClientDetailsModel> GetLeadClientDetails(Guid leadId);
     }
 }

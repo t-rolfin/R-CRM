@@ -24,24 +24,24 @@ namespace crm.infrastructure.QueryRepositories
             _connString = connString;
         }
 
-        public async Task<LeadsDto> GetAll()
+        public async Task<LeadsModel> GetAll()
         {
             string query = "select Leads.Id, Leads.LeadStage, Leads.CatchLead, Customer.PhoneNumber " +
-                "as PhoneNumber from Leads INNER JOIN Customer ON Customer.LeadId = Leads.Id";
+                "as PhoneNumber from Leads LEFT JOIN Customer ON Customer.Id = Leads.ClientId";
 
             using var conn = new SqlConnection(_connString.Value);
             conn.Open();
 
-            var leads = await conn.QueryAsync<LeadDto>(query);
+            var leads = await conn.QueryAsync<LeadModel>(query);
 
             if (!leads.Any())
                 return null;
             else
-                return new LeadsDto(leads);
+                return new LeadsModel(leads);
 
         }
 
-        public async Task<LeadDetailsDto> GetDetails(Guid leadId)
+        public async Task<LeadDetailsModel> GetDetails(Guid leadId)
         {
             string query = $"select l.*, n.Id, n.Content from Leads l " +
                            $"LEFT JOIN Note as n on n.LeadId = l.Id " +
@@ -50,7 +50,7 @@ namespace crm.infrastructure.QueryRepositories
             using var conn = new SqlConnection(_connString.Value);
             conn.Open();
 
-            var leads = await conn.QueryAsync<LeadDetailsDto, NoteDto, LeadDetailsDto>(query,
+            var leads = await conn.QueryAsync<LeadDetailsModel, NoteModel, LeadDetailsModel>(query,
                 (prod, note) => { prod.Notes.Add(note); return prod; });
 
             var lead = leads.GroupBy(x => x.Id).Select(g =>
@@ -64,6 +64,23 @@ namespace crm.infrastructure.QueryRepositories
                 return null;
             else
                 return lead;
+        }
+
+        public async Task<ClientDetailsModel> GetLeadClientDetails(Guid leadId)
+        {
+            string query = "select Leads.Id, Customer.Name_FirstName as FirstName, " +
+                "Customer.Name_LastName as LastName, Customer.PhoneNumber, Customer.EmailAddress, " +
+                "BillingAddress_Street as BillingAddress from Leads INNER JOIN Customer ON Customer.Id = Leads.ClientId";
+
+            using var conn = new SqlConnection(_connString.Value);
+            conn.Open();
+
+            var clientDetails = await conn.QueryAsync<ClientDetailsModel>(query);
+
+            if (!clientDetails.Any())
+                return null;
+            else
+                return clientDetails.First();
         }
     }
 }
