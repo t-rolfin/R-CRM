@@ -15,12 +15,12 @@ namespace crm.infrastructure.EntitiesConfigs
         {
             builder.OwnsOne(x => x.DelivaryAddress);
 
-            builder.HasOne(x => x.Client)
-                .WithOne()
-                .HasForeignKey<Customer>(x => x.LeadId);
-
             builder.HasMany(x => x.Notes)
                 .WithOne();
+
+            builder.HasOne(x => x.Client)
+                .WithMany()
+                .HasForeignKey("ClientId");
         }
     }
 }
