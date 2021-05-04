@@ -52,7 +52,11 @@ namespace crm.domain.LeadAggregate
             if (customer is null)
                 return Result<bool>.Invalid();
 
-            this.Client = customer;
+            this.Client.Update(
+                customer.Name, 
+                customer.PhoneNumber, 
+                customer.EmailAddress
+                );
 
             return Result<bool>.Success();
         }
