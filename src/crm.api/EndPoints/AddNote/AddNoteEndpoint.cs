@@ -1,6 +1,8 @@
 ﻿using Ardalis.ApiEndpoints;
+using crm.common.Utils;
 using crm.domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
@@ -11,14 +13,16 @@ using System.Threading.Tasks;
 namespace crm.api.EndPoints.AddNote
 {
     public class AddNoteEndpoint : BaseAsyncEndpoint
-        .WithRequest<AddNoteDto>
+        .WithRequest<AddNoteModel>
         .WithoutResponse
     {
         private readonly ILeadRepository _leadRepo;
+        private readonly ILogger<AddNoteEndpoint> _log;
 
-        public AddNoteEndpoint(ILeadRepository leadRepo)
+        public AddNoteEndpoint(ILeadRepository leadRepo, ILogger<AddNoteEndpoint> log)
         {
             _leadRepo = leadRepo ?? throw new ArgumentNullException();
+            _log = log ?? throw new ArgumentNullException();
         }
 
 
@@ -29,7 +33,7 @@ namespace crm.api.EndPoints.AddNote
         OperationId = "",
         Tags = new[] { "LeadEndpoint" })
         ]
-        public override async Task<ActionResult> HandleAsync([FromRoute] AddNoteDto request, CancellationToken cancellationToken = default)
+        public override async Task<ActionResult> HandleAsync([FromRoute] AddNoteModel request, CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -41,9 +45,17 @@ namespace crm.api.EndPoints.AddNote
             var response = await _leadRepo.UpdateAsync(lead, cancellationToken);
 
             if (response && result.IsSuccess)
-                return Ok(result.MetaResult.Message);
+            {
+                _log.LogInformation($"An note was added for the lead with id: { request.LeadId } ");
+
+                return Ok();
+            }
             else
-                return BadRequest(result.MetaResult.Message);
+            {
+                _log.LogError("Something went wrong. Report this to the team.");
+
+                return BadRequest();
+            }
 
         }
     }
