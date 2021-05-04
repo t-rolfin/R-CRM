@@ -8,17 +8,18 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.Authorization;
+using crm.common.DTOs.GetLeads;
 
 namespace crm.api.EndPoints.GetLeads
 {
-    public class GetLeadsEndPoint : BaseAsyncEndpoint
+    public class GetLeadsEndpoint : BaseAsyncEndpoint
         .WithoutRequest
-        .WithResponse<List<LeadsDto>>
+        .WithResponse<List<LeadModel>>
     {
 
         private readonly ILeadQueryRepository queryRepository;
 
-        public GetLeadsEndPoint(ILeadQueryRepository queryRepository)
+        public GetLeadsEndpoint(ILeadQueryRepository queryRepository)
         {
             this.queryRepository = queryRepository;
         }
@@ -30,17 +31,17 @@ namespace crm.api.EndPoints.GetLeads
         OperationId = "Lead.List",
         Tags = new[] { "LeadEndpoint" })
         ]
-        public override async Task<ActionResult<List<LeadsDto>>> HandleAsync(CancellationToken cancellationToken = default)
+        public override async Task<ActionResult<List<LeadModel>>> HandleAsync(CancellationToken cancellationToken = default)
         {
             var response = await queryRepository.GetAll();
 
             if (response.Leads.Any())
             {
-                var leadsDto = new LeadsDto();
+                var leadList = new List<LeadModel>();
 
                 foreach (var item in response.Leads)
                 {
-                    leadsDto.Leads.Add(new LeadDto(
+                    leadList.Add(new LeadModel(
                             item.Id,
                             item.PhoneNumber,
                             item.LeadStage.ToString(),
@@ -48,7 +49,7 @@ namespace crm.api.EndPoints.GetLeads
                         ));
                 }
 
-                return Ok(leadsDto.Leads.ToArray());
+                return Ok(leadList.ToArray());
             }
             else
                 return NotFound();
