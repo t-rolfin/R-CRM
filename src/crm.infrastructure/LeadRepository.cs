@@ -28,6 +28,7 @@ namespace crm.infrastructure
         {
             return await unitOfWork.Leads.Where(x => x.Id == leadId)
                 .Include(x => x.Notes)
+                .Include(x => x.Client)
                 .FirstOrDefaultAsync();
         }
 
