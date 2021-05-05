@@ -12,8 +12,9 @@ namespace crm.domain.Interfaces
     public interface IRepository<T>
         where T : IAggregateRoot
     {
-        Task<Result<Lead>> GetLead(Guid leadId);
-        Task<Result<bool>> Create(T obj, CancellationToken cancellationToken);
-        Task<Result<bool>> Update(T obj, CancellationToken cancellationToken);
+        Task<T> GetAsync(Guid leadId);
+        Task<T> GetByClientPhoneNumber(string phoneNumber, CancellationToken cancellationToken);
+        Task<bool> CreateAsync(T obj, CancellationToken cancellationToken);
+        Task<bool> UpdateAsync(T obj, CancellationToken cancellationToken);
     }
 }

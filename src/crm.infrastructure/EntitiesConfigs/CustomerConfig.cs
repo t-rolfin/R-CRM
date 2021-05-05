@@ -13,6 +13,8 @@ namespace crm.infrastructure.EntitiesConfigs
     {
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
+            builder.HasIndex(x => x.PhoneNumber);
+
             builder.OwnsOne(x => x.BillingAddress);
             builder.OwnsOne(x => x.Name);
         }

@@ -26,18 +26,18 @@ namespace crm.domain.LeadAggregate
         }
 
         public DateTime CloseLeadDate { get; protected set; }
-        public DateTime CatchLead { get; }
+        public DateTime CatchLead { get; init; }
         public string LeadProducts { get; init; }
         public LeadStage LeadStage { get; protected set; }
         public CloseStatus CloseStatus { get; protected set; }
-        public Customer Client { get; init; }
+        public Customer Client { get; protected set; }
         public Address DelivaryAddress { get; protected set; }
         public bool IsClosed => LeadStage == LeadStage.Close ? true : false;
         public decimal ProductsValue { get; protected set; }
 
         //public From CameFrom { get; init; }
 
-        private readonly List<Note> notes;
+        private readonly List<Note> notes = new List<Note>();
         public IReadOnlyList<Note> Notes
             => notes.AsReadOnly();
 
@@ -45,6 +45,20 @@ namespace crm.domain.LeadAggregate
         public static Lead New(string leadProducts, string phoneNumber, string delivaryAddress, string email)
         {
             return new Lead(leadProducts, phoneNumber, delivaryAddress, email);
+        }
+
+        public Result<bool> UpdateClient(Customer customer)
+        {
+            if (customer is null)
+                return Result<bool>.Invalid();
+
+            this.Client.Update(
+                customer.Name, 
+                customer.PhoneNumber, 
+                customer.EmailAddress
+                );
+
+            return Result<bool>.Success();
         }
 
         public Result<bool> AddNote(string newNote)
