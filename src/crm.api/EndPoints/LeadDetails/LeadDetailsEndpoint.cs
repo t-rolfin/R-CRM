@@ -4,6 +4,7 @@ using crm.common.DTOs;
 using crm.common.Utils;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Hosting;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -18,7 +19,6 @@ namespace crm.api.EndPoints.LeadDetails
         .WithRequest<Guid>
         .WithResponse<LeadDetailsModel>
     {
-
         private readonly ILeadQueryRepository _leadQueryRepo;
 
         public LeadDetailsEndpoint(ILeadQueryRepository leadQueryRepo)
@@ -33,26 +33,62 @@ namespace crm.api.EndPoints.LeadDetails
         )]
         public override async Task<ActionResult<LeadDetailsModel>> HandleAsync(Guid id, CancellationToken cancellationToken = default)
         {
+            this.Response.ContentType = "application/hal+json";
+
             var leadDetails = await _leadQueryRepo.GetDetails(id);
 
             if (leadDetails != null)
             {
-                leadDetails.Actions.Add(
-                    "addnote", 
-                    $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ leadDetails.Id }/notes/add"
-                    );
+                leadDetails.Links = leadDetails.LeadStage == 2 
+                    ? null 
+                    : new List<Link>()
+            {
+                new Link(
+                    $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }",
+                    "self",
+                    "GET"
+                ),
+                new Link(
+                    $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }/notes/add",
+                    "add-note",
+                    "POST"
+                ),
+                new Link(
+                    $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }/update",
+                    "update-client",
+                    "PATCH"
+                ),
+                new Link(
+                    $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }/updatevalue",
+                    "update-value",
+                    "PATCH"
+                ),
+                new Link(
+                    $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }/close",
+                    "close-lead",
+                    "PUT"
+                )
+            };
 
-                leadDetails.Actions.Add(
-                    "closelead",
-                    "");
-
-                leadDetails.Actions.Add(
-                    "updateprice",
-                    "");
-
-                leadDetails.Actions.Add(
-                    "updateclientinfo",
-                    "");
+                if (leadDetails.Notes.Any() && leadDetails.LeadStage != 2)
+                {
+                    foreach (var note in leadDetails.Notes)
+                    {
+                        note.Links = new()
+                        {
+                            new Link(
+                                $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}leads/{leadDetails.Id}/notes/delete/{note.Id}",
+                                "delete-note",
+                                "DELETE"
+                            ),
+                            new Link(
+                                $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}leads/{leadDetails.Id}/notes/update/{note.Id}",
+                                "update-note",
+                                "PATCH"
+                            )
+                        };
+                    }
+                }
 
                 return Ok(leadDetails);
             }
