@@ -44,7 +44,7 @@ namespace crm.api.EndPoints.GetLeads
                     leadList.Add(new LeadModel(
                             item.Id,
                             item.PhoneNumber,
-                            item.LeadStage.ToString(),
+                            item.LeadStage,
                             item.CatchLead
                         ));
                 }

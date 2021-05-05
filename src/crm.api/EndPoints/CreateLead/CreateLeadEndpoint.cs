@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Rolfin.Result;
 using crm.common.Utils;
+using Microsoft.AspNetCore.Routing;
 
 namespace crm.api.EndPoints.CreateLead
 {
@@ -22,15 +23,18 @@ namespace crm.api.EndPoints.CreateLead
         private readonly ILeadRepository _leadRepo;
         private readonly ILeadService _leadService;
         private readonly ILogger<CreateLeadEndpoint> _logger;
+        private readonly LinkGenerator _linkGenerator;
 
         public CreateLeadEndpoint(
             ILeadRepository leadRepo, 
             ILeadService leadService, 
-            ILogger<CreateLeadEndpoint> logger)
+            ILogger<CreateLeadEndpoint> logger,
+            LinkGenerator linkGenerator)
         {
             _leadRepo = leadRepo ?? throw new ArgumentNullException();
             _leadService = leadService ?? throw new ArgumentNullException();
             _logger = logger ?? throw new ArgumentNullException();
+            _linkGenerator = linkGenerator ?? throw new ArgumentNullException();
         }
 
         [HttpPost("/leads/create")]
