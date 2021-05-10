@@ -49,7 +49,16 @@ namespace crm.api.EndPoints.AddNote
             {
                 _log.LogInformation($"An note was added for the lead with id: { request.LeadId } ");
 
-                return Ok(result.Value);
+                var newNote = new NoteModel()
+                {
+                    Id = result.Value.Id,
+                    Content = result.Value.Content,
+                    Links = new()
+                };
+
+                GenerateLinksForNote(newNote, lead.Id);
+
+                return Ok(newNote);
             }
             else
             {
@@ -58,6 +67,25 @@ namespace crm.api.EndPoints.AddNote
                 return BadRequest();
             }
 
+        }
+        private void GenerateLinksForNote(NoteModel note, Guid leadId)
+        {
+            if (note is not null)
+            {
+                note!.Links = new()
+                {
+                    new Link(
+                        $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{leadId}/notes/{note.Id}",
+                        "delete-note",
+                        "DELETE"
+                    ),
+                    new Link(
+                        $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{leadId}/notes/update/{note.Id}",
+                        "update-note",
+                        "PATCH"
+                    )
+                };
+            }
         }
     }
 }
