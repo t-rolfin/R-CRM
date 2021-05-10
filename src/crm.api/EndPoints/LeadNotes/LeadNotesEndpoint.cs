@@ -66,7 +66,7 @@ namespace crm.api.EndPoints.LeadNotes
                     note!.Links = new()
                     {
                         new Link(
-                            $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{leadId}/notes/delete/{note.Id}",
+                            $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{leadId}/notes/{note.Id}",
                             "delete-note",
                             "DELETE"
                         ),
