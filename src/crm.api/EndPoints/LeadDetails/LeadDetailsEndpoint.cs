@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace crm.api.EndPoints.LeadDetails
 {
+    [Route("/leads")]
     public class LeadDetailsEndpoint : BaseAsyncEndpoint
         .WithRequest<Guid>
         .WithResponse<LeadDetailsModel>
@@ -26,7 +27,7 @@ namespace crm.api.EndPoints.LeadDetails
             _leadQueryRepo = leadQueryRepo;
         }
 
-        [HttpGet("leads/{id}")]
+        [HttpGet("{id}")]
         [SwaggerOperation(
             Summary = "Get information for a specific lead.",
             Tags = new[] { "LeadEndpoint" }
@@ -39,61 +40,45 @@ namespace crm.api.EndPoints.LeadDetails
 
             if (leadDetails != null)
             {
-                leadDetails.Links = leadDetails.LeadStage == 2 
-                    ? null 
-                    : new List<Link>()
-            {
-                new Link(
-                    $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }",
-                    "self",
-                    "GET"
-                ),
-                new Link(
-                    $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }/notes/add",
-                    "add-note",
-                    "POST"
-                ),
-                new Link(
-                    $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }/update",
-                    "update-client",
-                    "PATCH"
-                ),
-                new Link(
-                    $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }/updatevalue",
-                    "update-value",
-                    "PATCH"
-                ),
-                new Link(
-                    $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }/close",
-                    "close-lead",
-                    "PUT"
-                )
-            };
-
-                if (leadDetails.Notes.Any() && leadDetails.LeadStage != 2)
-                {
-                    foreach (var note in leadDetails.Notes)
-                    {
-                        note.Links = new()
-                        {
-                            new Link(
-                                $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}leads/{leadDetails.Id}/notes/delete/{note.Id}",
-                                "delete-note",
-                                "DELETE"
-                            ),
-                            new Link(
-                                $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}leads/{leadDetails.Id}/notes/update/{note.Id}",
-                                "update-note",
-                                "PATCH"
-                            )
-                        };
-                    }
-                }
-
+                GenerateLinksForLead(id, leadDetails);
                 return Ok(leadDetails);
             }
 
             return NotFound();
+        }
+
+        private void GenerateLinksForLead(Guid id, LeadDetailsModel leadDetails)
+        {
+            leadDetails.Links = leadDetails.LeadStage == 2
+                ? null
+                : new List<Link>()
+                    {
+                        new Link(
+                            $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }",
+                            "self",
+                            "GET"
+                        ),
+                        new Link(
+                            $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }/notes/add",
+                            "add-note",
+                            "POST"
+                        ),
+                        new Link(
+                            $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }/update",
+                            "update-client",
+                            "PATCH"
+                        ),
+                        new Link(
+                            $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }/updatevalue",
+                            "update-value",
+                            "PATCH"
+                        ),
+                        new Link(
+                            $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ id }/close",
+                            "close-lead",
+                            "PUT"
+                        )
+                    };
         }
     }
 }

@@ -61,16 +61,17 @@ namespace crm.domain.LeadAggregate
             return Result<bool>.Success();
         }
 
-        public Result<bool> AddNote(string newNote)
+        public Result<Note> AddNote(string newNote)
         {
             if (!string.IsNullOrWhiteSpace(newNote))
             {
-                notes.Add(new Note(newNote));
-                return Result<bool>.Success(true);
+                var note = new Note(newNote);
+                notes.Add(note);
+                return Result<Note>.Success(note);
             }
             else
             {
-                return Result<bool>.Invalid(false)
+                return Result<Note>.Invalid()
                     .With<NoContent>("The note content is null.");
             }
         }

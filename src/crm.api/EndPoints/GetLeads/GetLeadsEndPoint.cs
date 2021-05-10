@@ -12,6 +12,7 @@ using crm.common.DTOs.GetLeads;
 
 namespace crm.api.EndPoints.GetLeads
 {
+    [Route("/leads")]
     public class GetLeadsEndpoint : BaseAsyncEndpoint
         .WithoutRequest
         .WithResponse<List<LeadModel>>
@@ -24,7 +25,7 @@ namespace crm.api.EndPoints.GetLeads
             this.queryRepository = queryRepository;
         }
 
-        [HttpGet("/leads")]
+        [HttpGet]
         [SwaggerOperation(
         Summary = "Get all the leads.",
         Description = "",

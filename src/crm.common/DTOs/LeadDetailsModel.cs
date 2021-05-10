@@ -9,10 +9,7 @@ namespace crm.common.DTOs
     public class LeadDetailsModel : LinkResourceBase
     {
 
-        public LeadDetailsModel()
-        {
-            Notes = new List<NoteModel>();
-        }
+        public LeadDetailsModel() { }
 
         public Guid Id { get; set; }
         public DateTime CloseLeadDate { get;  set; }
@@ -22,6 +19,5 @@ namespace crm.common.DTOs
         public string CloseStatus { get; set; }
         public string DelivaryAddress { get; set; }
         public decimal ProductsValue { get; set; }
-        public List<NoteModel> Notes { get; set; }
     }
 }

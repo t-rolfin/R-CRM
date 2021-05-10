@@ -8,7 +8,7 @@ namespace crm.common.Utils
 {
     public class LinkResourceBase
     {
-        public LinkResourceBase() { }
+        public LinkResourceBase() { Links = new(); }
 
         public List<Link> Links { get; set; }
             = new();
