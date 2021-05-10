@@ -93,6 +93,23 @@ namespace crm.domain.LeadAggregate
             }
         }
 
+        public Result<bool> UpdateNoteContent(Guid noteId, string newContent)
+        {
+            if (!notes.Any(x => x.Id == noteId))
+                return Result<bool>.Invalid()
+                    .With($"A note with id: { noteId } does not exist.");
+
+            if (string.IsNullOrWhiteSpace(newContent))
+                return Result<bool>.Invalid()
+                    .With($"The new content can not be null or empty!");
+
+            var note = notes.Find(x => x.Id == noteId);
+            note.Content = newContent;
+
+            return Result<bool>.Success()
+                .With($"The note with id: { noteId } was updated!");
+        }
+
         public void CloseLead(CloseStatus closeStatus)
         {
             this.LeadStage = LeadStage.Close;

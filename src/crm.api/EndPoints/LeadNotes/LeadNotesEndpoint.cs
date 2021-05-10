@@ -36,13 +36,13 @@ namespace crm.api.EndPoints.LeadNotes
 
             var notes = await _queryLeadRepository.GetNotes(leadId);
 
-            if (notes == null)
-                return NoContent();
-
             var result = new NoteCollectionModel();
-            result.Notes = notes;
 
-            GenerateLinksForNotes(result.Notes, leadId);
+            if(notes is not null)
+            {
+                result.Notes = notes;
+                GenerateLinksForNotes(result.Notes, leadId);
+            }
 
             result.Links.Add(new Link(
                     $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{ leadId }/notes/add",
