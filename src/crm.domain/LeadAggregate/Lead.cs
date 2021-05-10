@@ -88,7 +88,7 @@ namespace crm.domain.LeadAggregate
                 return Result<bool>
                     .Invalid(false)
                     .With<NoteNotFound>(
-                    "A note with this Id wasn't found."
+                    $"A note with this id: { noteId } wasn't found."
                     );
             }
         }
