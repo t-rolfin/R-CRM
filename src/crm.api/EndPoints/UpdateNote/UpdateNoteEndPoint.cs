@@ -43,7 +43,7 @@ namespace crm.api.EndPoints.UpdateNote
                 return BadRequest(result.MetaResult.Message);
 
             await _leadRepository.UpdateAsync(lead, cancellationToken);
-            return Ok(result.MetaResult.Message);
+            return Ok();
         }
     }
 }

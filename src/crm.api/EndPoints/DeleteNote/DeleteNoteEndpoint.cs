@@ -40,7 +40,7 @@ namespace crm.api.EndPoints.DeleteNote
             else
             {
                 await _leadRepository.UpdateAsync(lead, cancellationToken);
-                return Ok(result.MetaResult.Message);
+                return Ok();
             }
         }
     }
