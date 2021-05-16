@@ -43,27 +43,17 @@ namespace crm.infrastructure.QueryRepositories
 
         public async Task<LeadDetailsModel> GetDetails(Guid leadId)
         {
-            string query = $"select l.*, n.Id, n.Content from Leads l " +
-                           $"LEFT JOIN Note as n on n.LeadId = l.Id " +
-                           $"WHERE l.Id = '{ leadId }'";
+            string query = $"select * from Leads WHERE Leads.Id = '{ leadId }'";
 
             using var conn = new SqlConnection(_connString.Value);
             conn.Open();
 
-            var leads = await conn.QueryAsync<LeadDetailsModel, NoteModel, LeadDetailsModel>(query,
-                (prod, note) => { prod.Notes.Add(note); return prod; });
-
-            var lead = leads.GroupBy(x => x.Id).Select(g =>
-            {
-                var groupedLead = g.First();
-                groupedLead.Notes = g.Select(p => p.Notes.First()).ToList();
-                return groupedLead;
-            }).First();
+            var lead = await conn.QueryAsync<LeadDetailsModel>(query);
 
             if (lead is null)
                 return null;
             else
-                return lead;
+                return lead.First();
         }
 
         public async Task<ClientDetailsModel> GetLeadClientDetails(Guid leadId)
@@ -81,6 +71,21 @@ namespace crm.infrastructure.QueryRepositories
                 return null;
             else
                 return clientDetails.First();
+        }
+
+        public async Task<List<NoteModel>> GetNotes(Guid leadId)
+        {
+            string query = $"SELECT * FROM Note WHERE Note.LeadId = '{ leadId }'";
+
+            using var conn = new SqlConnection(_connString.Value);
+            conn.Open();
+
+            var leadNotes = await conn.QueryAsync<NoteModel>(query);
+
+            if (!leadNotes.Any())
+                return null;
+            else
+                return leadNotes.ToList();
         }
     }
 }

@@ -61,16 +61,17 @@ namespace crm.domain.LeadAggregate
             return Result<bool>.Success();
         }
 
-        public Result<bool> AddNote(string newNote)
+        public Result<Note> AddNote(string newNote)
         {
             if (!string.IsNullOrWhiteSpace(newNote))
             {
-                notes.Add(new Note(newNote));
-                return Result<bool>.Success(true);
+                var note = new Note(newNote);
+                notes.Add(note);
+                return Result<Note>.Success(note);
             }
             else
             {
-                return Result<bool>.Invalid(false)
+                return Result<Note>.Invalid()
                     .With<NoContent>("The note content is null.");
             }
         }
@@ -87,9 +88,26 @@ namespace crm.domain.LeadAggregate
                 return Result<bool>
                     .Invalid(false)
                     .With<NoteNotFound>(
-                    "A note with this Id wasn't found."
+                    $"A note with this id: { noteId } wasn't found."
                     );
             }
+        }
+
+        public Result<bool> UpdateNoteContent(Guid noteId, string newContent)
+        {
+            if (!notes.Any(x => x.Id == noteId))
+                return Result<bool>.Invalid()
+                    .With($"A note with id: { noteId } does not exist.");
+
+            if (string.IsNullOrWhiteSpace(newContent))
+                return Result<bool>.Invalid()
+                    .With($"The new content can not be null or empty!");
+
+            var note = notes.Find(x => x.Id == noteId);
+            note.Content = newContent;
+
+            return Result<bool>.Success()
+                .With($"The note with id: { noteId } was updated!");
         }
 
         public void CloseLead(CloseStatus closeStatus)

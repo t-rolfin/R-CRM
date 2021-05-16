@@ -37,14 +37,13 @@ namespace crm.api.EndPoints.UpdateNote
             if (lead is null)
                 return NotFound();
 
-            if(lead.DeleteNote(request.NoteId))
-            {
-                lead.AddNote(request.NewContent);
-                await _leadRepository.UpdateAsync(lead, cancellationToken);
-                return Ok();
-            }
+            var result = lead.UpdateNoteContent(request.NoteId ,request.NewContent);
 
-            return BadRequest();
+            if (!result.IsSuccess)
+                return BadRequest(result.MetaResult.Message);
+
+            await _leadRepository.UpdateAsync(lead, cancellationToken);
+            return Ok(result.MetaResult.Message);
         }
     }
 }

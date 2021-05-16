@@ -1,15 +1,16 @@
-﻿using System;
+﻿using crm.common.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace crm.common.DTOs.GetLeads
 {
-    public class LeadModel
+    public class LeadModel : LinkResourceBase
     {
-        public LeadModel() { }
+        public LeadModel() : base() { }
 
-        public LeadModel(Guid id, string phoneNumber, string leadStage, DateTime catchLead)
+        public LeadModel(Guid id, string phoneNumber, int leadStage, DateTime catchLead)
         {
             Id = id;
             PhoneNumber = phoneNumber;
@@ -19,7 +20,7 @@ namespace crm.common.DTOs.GetLeads
 
         public Guid Id { get; set; }
         public string PhoneNumber { get; set; }
-        public string LeadStage { get; set; }
+        public int LeadStage { get; set; }
         public DateTime CatchLead { get; set; }
     }
 }
