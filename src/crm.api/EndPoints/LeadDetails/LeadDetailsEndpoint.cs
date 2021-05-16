@@ -2,6 +2,7 @@
 using crm.common;
 using crm.common.DTOs;
 using crm.common.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -27,6 +28,7 @@ namespace crm.api.EndPoints.LeadDetails
             _leadQueryRepo = leadQueryRepo;
         }
 
+        [Authorize(Policy = "read:leaddetails")]
         [HttpGet("{id}")]
         [SwaggerOperation(
             Summary = "Get information for a specific lead.",

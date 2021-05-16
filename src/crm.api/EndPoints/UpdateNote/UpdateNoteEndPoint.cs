@@ -1,5 +1,6 @@
 ﻿using Ardalis.ApiEndpoints;
 using crm.domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -22,6 +23,7 @@ namespace crm.api.EndPoints.UpdateNote
             _leadRepository = leadRepository;
         }
 
+        [Authorize]
         [HttpPatch("leads/{leadid}/notes/update/{noteid}")]
         [SwaggerOperation(
             Summary = "Update an existin' note for a specific lead.",
@@ -43,7 +45,7 @@ namespace crm.api.EndPoints.UpdateNote
                 return BadRequest(result.MetaResult.Message);
 
             await _leadRepository.UpdateAsync(lead, cancellationToken);
-            return Ok(result.MetaResult.Message);
+            return Ok();
         }
     }
 }

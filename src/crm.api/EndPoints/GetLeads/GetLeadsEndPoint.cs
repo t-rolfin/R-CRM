@@ -25,6 +25,7 @@ namespace crm.api.EndPoints.GetLeads
             this.queryRepository = queryRepository;
         }
 
+        [Authorize(Policy = "read:leads")]
         [HttpGet]
         [SwaggerOperation(
         Summary = "Get all the leads.",

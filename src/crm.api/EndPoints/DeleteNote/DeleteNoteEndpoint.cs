@@ -1,5 +1,6 @@
 ﻿using Ardalis.ApiEndpoints;
 using crm.domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -21,6 +22,7 @@ namespace crm.api.EndPoints.DeleteNote
             _leadRepository = leadRepository;
         }
 
+        [Authorize]
         [HttpDelete("/leads/{leadid}/notes/{noteid}")]
         [SwaggerOperation(
             Summary = "Delete a note for a specific lead.",
@@ -40,7 +42,7 @@ namespace crm.api.EndPoints.DeleteNote
             else
             {
                 await _leadRepository.UpdateAsync(lead, cancellationToken);
-                return Ok(result.MetaResult.Message);
+                return Ok();
             }
         }
     }

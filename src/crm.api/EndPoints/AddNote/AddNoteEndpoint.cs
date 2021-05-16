@@ -2,6 +2,7 @@
 using crm.common.DTOs;
 using crm.common.Utils;
 using crm.domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
@@ -27,6 +28,7 @@ namespace crm.api.EndPoints.AddNote
         }
 
 
+        [Authorize]
         [HttpPost("leads/{leadid}/notes/add")]
         [SwaggerOperation(
         Summary = "Add a note to an existing lead.",

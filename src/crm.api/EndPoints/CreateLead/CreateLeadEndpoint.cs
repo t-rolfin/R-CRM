@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Rolfin.Result;
 using crm.common.Utils;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Authorization;
 
 namespace crm.api.EndPoints.CreateLead
 {
@@ -37,6 +38,7 @@ namespace crm.api.EndPoints.CreateLead
             _linkGenerator = linkGenerator ?? throw new ArgumentNullException();
         }
 
+        [Authorize]
         [HttpPost("/leads/create")]
         [SwaggerOperation(
         Summary = "Create a lead",

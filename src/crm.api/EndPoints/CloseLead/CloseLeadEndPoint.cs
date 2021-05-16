@@ -1,5 +1,6 @@
 ﻿using Ardalis.ApiEndpoints;
 using crm.domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -21,7 +22,7 @@ namespace crm.api.EndPoints.CloseLead
             _leadRepository = leadRepository;
         }
 
-
+        [Authorize]
         [HttpPut("leads/{leadid}/close")]
         [SwaggerOperation(
             Summary = "Close a lead.",
