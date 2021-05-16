@@ -45,8 +45,8 @@ namespace crm.api
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("read:leads", policy => policy.Requirements.Add(new HasScopeRequirement("read:leads", Configuration["Auth0:Domain"])));
-                options.AddPolicy("read:leaddetails", policy => policy.Requirements.Add(new HasScopeRequirement("read:leaddetails", Configuration["Auth0:Domain"])));
+                options.AddPolicy("read:leads", policy => policy.Requirements.Add(new HasScopeRequirement("read:leads", Configuration["Domain"])));
+                options.AddPolicy("read:leaddetails", policy => policy.Requirements.Add(new HasScopeRequirement("read:leaddetails", Configuration["Domain"])));
             });
 
             services.AddControllers()
