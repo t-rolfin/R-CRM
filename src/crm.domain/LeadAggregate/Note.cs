@@ -12,6 +12,6 @@ namespace crm.domain.LeadAggregate
         }
 
         public Guid LeadId { get; init; }
-        public string Content { get; init; }
+        public string Content { get; set; }
     }
 }

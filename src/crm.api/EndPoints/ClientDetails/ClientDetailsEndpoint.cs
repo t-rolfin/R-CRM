@@ -2,6 +2,7 @@
 using crm.common;
 using crm.common.DTOs;
 using crm.domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -24,7 +25,7 @@ namespace crm.api.EndPoints.ClientDetails
             _leadQueryRepository = leadQueryRepository;
         }
 
-
+        [Authorize]
         [HttpGet("leads/{leadid}/clientdetails")]
         [SwaggerOperation(
             Summary = "Get client details for a specific lead.",

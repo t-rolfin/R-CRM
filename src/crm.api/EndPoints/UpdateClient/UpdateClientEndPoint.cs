@@ -3,6 +3,7 @@ using crm.common.DTOs;
 using crm.domain.Interfaces;
 using crm.domain.LeadAggregate;
 using crm.domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -25,7 +26,7 @@ namespace crm.api.EndPoints.UpdateClient
             _leadRepository = leadRepository;
         }
 
-
+        [Authorize]
         [HttpPatch("/lead/{id}/update")]
         [SwaggerOperation(
             Summary = "Update client details.",

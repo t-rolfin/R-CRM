@@ -52,7 +52,7 @@ namespace crm.unittests
             var result = _sut.AddNote("new note");
 
             result.MetaResult.Should().BeOfType<Ok>();
-            result.Value.Should().BeTrue();
+            result.IsSuccess.Should().BeTrue();
         }
 
         [Fact]
@@ -61,7 +61,7 @@ namespace crm.unittests
             var result = _sut.AddNote("");
 
             result.MetaResult.Should().BeOfType<NoContent>();
-            result.Value.Should().BeFalse();
+            result.IsSuccess.Should().BeFalse();
         }
 
         [Fact]

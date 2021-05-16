@@ -1,6 +1,8 @@
 ﻿using Ardalis.ApiEndpoints;
+using crm.common.DTOs;
 using crm.common.Utils;
 using crm.domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
@@ -14,7 +16,7 @@ namespace crm.api.EndPoints.AddNote
 {
     public class AddNoteEndpoint : BaseAsyncEndpoint
         .WithRequest<AddNoteModel>
-        .WithoutResponse
+        .WithResponse<NoteModel>
     {
         private readonly ILeadRepository _leadRepo;
         private readonly ILogger<AddNoteEndpoint> _log;
@@ -26,6 +28,7 @@ namespace crm.api.EndPoints.AddNote
         }
 
 
+        [Authorize]
         [HttpPost("leads/{leadid}/notes/add")]
         [SwaggerOperation(
         Summary = "Add a note to an existing lead.",
@@ -33,7 +36,7 @@ namespace crm.api.EndPoints.AddNote
         OperationId = "",
         Tags = new[] { "LeadEndpoint" })
         ]
-        public override async Task<ActionResult> HandleAsync([FromRoute] AddNoteModel request, CancellationToken cancellationToken = default)
+        public override async Task<ActionResult<NoteModel>> HandleAsync([FromRoute] AddNoteModel request, CancellationToken cancellationToken = default)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -48,7 +51,16 @@ namespace crm.api.EndPoints.AddNote
             {
                 _log.LogInformation($"An note was added for the lead with id: { request.LeadId } ");
 
-                return Ok();
+                var newNote = new NoteModel()
+                {
+                    Id = result.Value.Id,
+                    Content = result.Value.Content,
+                    Links = new()
+                };
+
+                GenerateLinksForNote(newNote, lead.Id);
+
+                return Ok(newNote);
             }
             else
             {
@@ -57,6 +69,25 @@ namespace crm.api.EndPoints.AddNote
                 return BadRequest();
             }
 
+        }
+        private void GenerateLinksForNote(NoteModel note, Guid leadId)
+        {
+            if (note is not null)
+            {
+                note!.Links = new()
+                {
+                    new Link(
+                        $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{leadId}/notes/{note.Id}",
+                        "delete-note",
+                        "DELETE"
+                    ),
+                    new Link(
+                        $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/leads/{leadId}/notes/update/{note.Id}",
+                        "update-note",
+                        "PATCH"
+                    )
+                };
+            }
         }
     }
 }

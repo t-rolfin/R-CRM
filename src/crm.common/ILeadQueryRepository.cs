@@ -13,5 +13,6 @@ namespace crm.common
         Task<LeadsModel> GetAll();
         Task<LeadDetailsModel> GetDetails(Guid leadId);
         Task<ClientDetailsModel> GetLeadClientDetails(Guid leadId);
+        Task<List<NoteModel>> GetNotes(Guid leadId);
     }
 }
