@@ -2,6 +2,7 @@
 using crm.common;
 using crm.common.DTOs;
 using crm.common.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -23,7 +24,7 @@ namespace crm.api.EndPoints.LeadNotes
             _queryLeadRepository = queryLeadRepository;
         }
 
-
+        [Authorize]
         [HttpGet("{leadId}/notes")]
         [SwaggerOperation(
             Summary = "Return a list of notes for a specific lead.",

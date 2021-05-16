@@ -1,5 +1,6 @@
 ﻿using Ardalis.ApiEndpoints;
 using crm.domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -21,6 +22,7 @@ namespace crm.api.EndPoints.ChangePrice
             _leadRepository = leadRepository;
         }
 
+        [Authorize]
         [HttpPatch("leads/{leadid}/updatevalue")]
         [SwaggerOperation(
             Summary = "Update the value of a lead.",

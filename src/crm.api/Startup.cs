@@ -8,6 +8,9 @@ using crm.infrastructure;
 using System.Reflection;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication;
+using crm.common.Utils;
+using Microsoft.AspNetCore.Authorization;
 
 namespace crm.api
 {
@@ -40,6 +43,12 @@ namespace crm.api
                     options.Audience = Configuration["Auth0:Audience"];
                 });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("read:leads", policy => policy.Requirements.Add(new HasScopeRequirement("read:leads", Configuration["Auth0:Domain"])));
+                options.AddPolicy("read:leaddetails", policy => policy.Requirements.Add(new HasScopeRequirement("read:leaddetails", Configuration["Auth0:Domain"])));
+            });
+
             services.AddControllers()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()))
                 .AddNewtonsoftJson();
@@ -49,6 +58,8 @@ namespace crm.api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "crm.api", Version = "v1" });
                 c.EnableAnnotations();
             });
+
+            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
