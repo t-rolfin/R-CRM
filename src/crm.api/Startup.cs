@@ -39,8 +39,8 @@ namespace crm.api
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = Configuration["Auth0:Domain"];
-                    options.Audience = Configuration["Auth0:Audience"];
+                    options.Authority = Configuration["Domain"];
+                    options.Audience = Configuration["Audience"];
                 });
 
             services.AddAuthorization(options =>
@@ -67,10 +67,9 @@ namespace crm.api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "crm.api v1"));
             }
-
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "crm.api v1"));
 
             app.UseHttpsRedirection();
 
