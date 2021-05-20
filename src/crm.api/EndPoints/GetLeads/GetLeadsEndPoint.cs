@@ -37,6 +37,9 @@ namespace crm.api.EndPoints.GetLeads
         {
             var response = await queryRepository.GetAll();
 
+            if (response is null)
+                return NoContent();
+
             if (response.Leads.Any())
             {
                 var leadList = new List<LeadModel>();
