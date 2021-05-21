@@ -38,7 +38,7 @@ namespace crm.api.EndPoints.CreateLead
             _linkGenerator = linkGenerator ?? throw new ArgumentNullException();
         }
 
-        [Authorize]
+        [Authorize(Policy = "write:leads")]
         [HttpPost("/leads/create")]
         [SwaggerOperation(
         Summary = "Create a lead",

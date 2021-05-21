@@ -47,6 +47,7 @@ namespace crm.api
             {
                 options.AddPolicy("read:leads", policy => policy.Requirements.Add(new HasScopeRequirement("read:leads", Configuration["Domain"])));
                 options.AddPolicy("read:leaddetails", policy => policy.Requirements.Add(new HasScopeRequirement("read:leaddetails", Configuration["Domain"])));
+                options.AddPolicy("write:leads", policy => policy.Requirements.Add(new HasScopeRequirement("write:leads", Configuration["Domain"])));
             });
 
             services.AddControllers()
