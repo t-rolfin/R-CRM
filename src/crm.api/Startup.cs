@@ -36,19 +36,7 @@ namespace crm.api
                 });
             });
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.Authority = Configuration["Domain"];
-                    options.Audience = Configuration["Audience"];
-                });
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("read:leads", policy => policy.Requirements.Add(new HasScopeRequirement("read:leads", Configuration["Domain"])));
-                options.AddPolicy("read:leaddetails", policy => policy.Requirements.Add(new HasScopeRequirement("read:leaddetails", Configuration["Domain"])));
-                options.AddPolicy("write:leads", policy => policy.Requirements.Add(new HasScopeRequirement("write:leads", Configuration["Domain"])));
-            });
+            services.AddAuth0(Configuration);
 
             services.AddControllers()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()))

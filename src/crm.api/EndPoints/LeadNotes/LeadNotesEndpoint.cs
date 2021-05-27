@@ -24,7 +24,7 @@ namespace crm.api.EndPoints.LeadNotes
             _queryLeadRepository = queryLeadRepository;
         }
 
-        [Authorize]
+        [Authorize(Policy = "read:notes")]
         [HttpGet("{leadId}/notes")]
         [SwaggerOperation(
             Summary = "Return a list of notes for a specific lead.",

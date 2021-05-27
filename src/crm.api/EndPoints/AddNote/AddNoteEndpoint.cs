@@ -28,7 +28,7 @@ namespace crm.api.EndPoints.AddNote
         }
 
 
-        [Authorize]
+        [Authorize(Policy = "write:note")]
         [HttpPost("leads/{leadid}/notes/add")]
         [SwaggerOperation(
         Summary = "Add a note to an existing lead.",

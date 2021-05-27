@@ -22,7 +22,7 @@ namespace crm.api.EndPoints.CloseLead
             _leadRepository = leadRepository;
         }
 
-        [Authorize]
+        [Authorize(Policy = "close:lead")]
         [HttpPut("leads/{leadid}/close")]
         [SwaggerOperation(
             Summary = "Close a lead.",

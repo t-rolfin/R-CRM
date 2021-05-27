@@ -25,7 +25,7 @@ namespace crm.api.EndPoints.ClientDetails
             _leadQueryRepository = leadQueryRepository;
         }
 
-        [Authorize]
+        [Authorize(Policy = "read:client")]
         [HttpGet("leads/{leadid}/clientdetails")]
         [SwaggerOperation(
             Summary = "Get client details for a specific lead.",

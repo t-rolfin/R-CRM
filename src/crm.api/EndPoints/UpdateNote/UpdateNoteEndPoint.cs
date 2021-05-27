@@ -23,7 +23,7 @@ namespace crm.api.EndPoints.UpdateNote
             _leadRepository = leadRepository;
         }
 
-        [Authorize]
+        [Authorize(Policy = "update:note")]
         [HttpPatch("leads/{leadid}/notes/update/{noteid}")]
         [SwaggerOperation(
             Summary = "Update an existin' note for a specific lead.",

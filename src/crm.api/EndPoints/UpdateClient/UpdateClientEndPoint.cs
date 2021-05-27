@@ -26,7 +26,7 @@ namespace crm.api.EndPoints.UpdateClient
             _leadRepository = leadRepository;
         }
 
-        [Authorize]
+        [Authorize(Policy = "update:client")]
         [HttpPatch("/lead/{id}/update")]
         [SwaggerOperation(
             Summary = "Update client details.",

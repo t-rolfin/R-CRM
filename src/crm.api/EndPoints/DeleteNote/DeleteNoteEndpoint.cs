@@ -22,7 +22,7 @@ namespace crm.api.EndPoints.DeleteNote
             _leadRepository = leadRepository;
         }
 
-        [Authorize]
+        [Authorize(Policy = "delete:note")]
         [HttpDelete("/leads/{leadid}/notes/{noteid}")]
         [SwaggerOperation(
             Summary = "Delete a note for a specific lead.",
