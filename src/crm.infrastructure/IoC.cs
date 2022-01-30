@@ -2,7 +2,9 @@
 using crm.domain.Interfaces;
 using crm.domain.LeadAggregate;
 using crm.domain.Services;
+using crm.infrastructure.Identity;
 using crm.infrastructure.QueryRepositories;
+using crm.infrastructure.Utils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -28,6 +30,14 @@ namespace crm.infrastructure
             services.AddTransient<IRepository<Lead>, LeadRepository>();
             services.AddTransient<ILeadService, LeadService>();
             services.AddTransient<ILeadQueryRepository, LeadQueryRepository>();
+
+            return services;
+        }
+
+        public static IServiceCollection Authentification(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<IJwtTokenFactory, JwtTokenFactory>();
 
             return services;
         }

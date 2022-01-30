@@ -11,6 +11,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
 using crm.common.Utils;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using crm.infrastructure.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace crm.api
 {
@@ -21,10 +26,22 @@ namespace crm.api
             Configuration = configuration;
         }
 
+        private IConfigurationSection JwtSettings
+        {
+            get => Configuration.GetSection("JwtSettings");
+        }
+
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<IdentityContext>();
+
+            services.AddIdentityCore<User>()
+                .AddEntityFrameworkStores<IdentityContext>()
+                .AddSignInManager();
+
+            IoC.Authentification(services, Configuration);
             IoC.Infrastructure(services, Configuration);
 
             services.AddCors(options =>
@@ -39,15 +56,24 @@ namespace crm.api
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = Configuration["Domain"];
-                    options.Audience = Configuration["Audience"];
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = JwtSettings["Issuer"],
+                        
+                        ValidateAudience = true,
+                        ValidAudience = JwtSettings["Audience"],
+
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSettings["SecretKey"])),
+                    };
                 });
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("read:leads", policy => policy.Requirements.Add(new HasScopeRequirement("read:leads", Configuration["Domain"])));
-                options.AddPolicy("read:leaddetails", policy => policy.Requirements.Add(new HasScopeRequirement("read:leaddetails", Configuration["Domain"])));
-                options.AddPolicy("write:leads", policy => policy.Requirements.Add(new HasScopeRequirement("write:leads", Configuration["Domain"])));
+                options.AddPolicy("read:leads", policy => policy.RequireClaim("permissions", "read:leads"));
+                options.AddPolicy("read:leaddetails", policy => policy.RequireClaim("permissions", "read:leaddetails"));
+                options.AddPolicy("write:leads", policy => policy.RequireClaim("permissions", "write:leads"));
             });
 
             services.AddControllers()
@@ -86,5 +112,6 @@ namespace crm.api
                 endpoints.MapControllers();
             });
         }
+
     }
 }
