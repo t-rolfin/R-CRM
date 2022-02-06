@@ -8,7 +8,7 @@ namespace crm.api.AccountModels
         string PhoneNumber,
         string Email,
         string Password,
-        string VerifyPassword,
+        bool GeneratePassword,
         List<string> Roles = null
         );
 }

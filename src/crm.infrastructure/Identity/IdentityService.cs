@@ -1,4 +1,5 @@
-﻿using crm.infrastructure.Utils;
+﻿using crm.common.DTOs;
+using crm.infrastructure.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,10 +24,13 @@ namespace crm.infrastructure.Identity
             _jwtFactory = jwtFactory;
         }
 
-        public async Task<bool> RegisterUserAsync(User user, List<string> roles, string password)
+        public async Task<bool> RegisterUserAsync(User user, List<string> roles, bool generatePassword, string password)
         {
             if (user is not null)
             {
+                // TODO: create a servici to generate passwords
+                password = generatePassword ? "Gp123!@#" : password;
+
                 var response = await _userManager.CreateAsync(user, password);
                 return response.Succeeded ? true : false;
             }
@@ -48,5 +52,13 @@ namespace crm.infrastructure.Identity
             return (null ,null , null);
         }
 
+        public async Task<List<UserModel>> GetUsersAsync()
+        {
+            var users = await _userManager.Users
+                .Select(x => new UserModel(x.Id.ToString(), x.UserName, x.Email, x.PhoneNumber, "", ""))
+                .ToListAsync();
+
+            return users;
+        }
     }
 }

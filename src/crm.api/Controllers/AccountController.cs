@@ -28,7 +28,7 @@ namespace crm.api.Controllers
                 PhoneNumber = model.PhoneNumber
             };
 
-            var result = await _identityService.RegisterUserAsync(user, model.Roles, model.Password);
+            var result = await _identityService.RegisterUserAsync(user, model.Roles, model.GeneratePassword, model.Password);
 
             return new JsonResult(result);
         }
