@@ -1,5 +1,6 @@
 ﻿using crm.api.AccountModels;
 using crm.infrastructure.Identity;
+using crm.infrastructure.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Rolfin.Result;
@@ -12,10 +13,12 @@ namespace crm.api.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IIdentityService _identityService;
+        private readonly ILoggerManager _logger;
 
-        public AccountController(IIdentityService identityService)
+        public AccountController(IIdentityService identityService, ILoggerManager logger)
         {
             _identityService = identityService;
+            _logger = logger;
         }
 
         [HttpPost("Register")]
@@ -36,6 +39,7 @@ namespace crm.api.Controllers
         [HttpPost("LogIn")]
         public async Task<IActionResult> LogIn(LogInModel model)
         {
+            _logger.LogError("Method LogIn was called!");
             var response = await _identityService.LogInAsync(model.UserName, model.Password);
             return Ok(new LoginResonse(Constants.TokenType, response.token, response.idToken , null));
         }

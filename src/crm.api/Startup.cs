@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Identity;
 using crm.infrastructure.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using crm.infrastructure.Logging;
+using Serilog;
 
 namespace crm.api
 {
@@ -97,6 +99,7 @@ namespace crm.api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "crm.api v1"));
             }
+            app.UseSerilogRequestLogging();
 
             app.UseHttpsRedirection();
 

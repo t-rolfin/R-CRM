@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C58CE81B-1E5E-4DAB-8806-5C24294B3819}"
 EndProject
@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "crm.infrastructure", "src\c
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "crm.unittests", "src\crm.unittests\crm.unittests.csproj", "{D3FA2EF6-D678-43C5-850E-926271AB468D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "crm.common", "src\crm.common\crm.common.csproj", "{CEB8575A-3CD0-41F3-AE00-7C16BCBC56D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "crm.common", "src\crm.common\crm.common.csproj", "{CEB8575A-3CD0-41F3-AE00-7C16BCBC56D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

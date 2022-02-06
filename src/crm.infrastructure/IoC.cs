@@ -3,6 +3,7 @@ using crm.domain.Interfaces;
 using crm.domain.LeadAggregate;
 using crm.domain.Services;
 using crm.infrastructure.Identity;
+using crm.infrastructure.Logging;
 using crm.infrastructure.QueryRepositories;
 using crm.infrastructure.Utils;
 using Microsoft.Extensions.Configuration;
@@ -30,6 +31,8 @@ namespace crm.infrastructure
             services.AddTransient<IRepository<Lead>, LeadRepository>();
             services.AddTransient<ILeadService, LeadService>();
             services.AddTransient<ILeadQueryRepository, LeadQueryRepository>();
+
+            services.AddTransient<ILoggerManager, LoggerManager>();
 
             return services;
         }
