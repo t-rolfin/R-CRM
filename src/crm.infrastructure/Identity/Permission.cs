@@ -12,11 +12,13 @@ namespace crm.infrastructure.Identity
     {
         protected Permission() : base() { }
 
-        public Permission(string name) : base()
+        public Permission(string group, string name) : base()
         {
+            Group = group;
             Name = name;
         }
 
+        public string Group { get; protected set; }
         public string Name { get; protected set; }
     }
 }
