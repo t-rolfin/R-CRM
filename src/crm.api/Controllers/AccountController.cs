@@ -1,4 +1,5 @@
 ﻿using crm.api.AccountModels;
+using crm.common.DTOs;
 using crm.infrastructure.Identity;
 using crm.infrastructure.Logging;
 using Microsoft.AspNetCore.Http;
@@ -42,6 +43,13 @@ namespace crm.api.Controllers
             _logger.LogError("Method LogIn was called!");
             var response = await _identityService.LogInAsync(model.UserName, model.Password);
             return Ok(new LoginResonse(Constants.TokenType, response.token, response.idToken , null));
+        }
+
+        [HttpGet("getUserDetails/{id}")]
+        public async Task<IActionResult> GetUserDetails(string id)
+        {
+            var userDetails = await _identityService.GetUserDetailsAsync(id);
+            return userDetails is default(UpdateUserModel) ? BadRequest() : Ok(userDetails);
         }
 
         public record LoginResonse(

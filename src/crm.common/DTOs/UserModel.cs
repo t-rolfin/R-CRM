@@ -15,4 +15,13 @@ namespace crm.common.DTOs
             string Roles,
             string CreatedBy
         );
+
+    public record UpdateUserModel(
+            string Id,
+            string FirstName,
+            string LastName,
+            string Email,
+            string PhoneNumber,
+            string Roles
+        );
 }

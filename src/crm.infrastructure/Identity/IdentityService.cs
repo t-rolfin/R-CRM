@@ -60,5 +60,15 @@ namespace crm.infrastructure.Identity
 
             return users;
         }
+
+        public async Task<UpdateUserModel> GetUserDetailsAsync(string id)
+        {
+            var userDetails = await _userManager.Users
+                .Where(x => x.Id == id)
+                .Select(x => new UpdateUserModel(x.Id, x.UserName, "", x.Email, x.PhoneNumber, ""))
+                .FirstOrDefaultAsync();
+
+            return userDetails;
+        }
     }
 }

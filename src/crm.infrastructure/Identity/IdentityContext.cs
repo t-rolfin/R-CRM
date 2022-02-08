@@ -15,6 +15,8 @@ namespace crm.infrastructure.Identity
         public IdentityContext(IConfiguration config) : base()
         { _config = config; }
 
+        public DbSet<Permission> Perrmissions { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_config.GetConnectionString("LeadConnectionString"));

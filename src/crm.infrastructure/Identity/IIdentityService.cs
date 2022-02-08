@@ -10,5 +10,6 @@ namespace crm.infrastructure.Identity
         Task<(string token, string idToken, string refreshToken)> LogInAsync(string userName, string password);
 
         Task<List<UserModel>> GetUsersAsync();
+        Task<UpdateUserModel> GetUserDetailsAsync(string id);
     }
 }
